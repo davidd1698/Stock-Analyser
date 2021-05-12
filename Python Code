@@ -1,14 +1,13 @@
 Let's start with the project!
-import pandas as pd
+
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas_datareader as web
 
 # Ask for the number of stocks the user wants to preselect
-a = None
-while a is None:
+number = None
+while number is None:
   try:
-    a = int(input("Type the number of stocks you want to preselect: "))
+    number = int(input("Type the number of stocks you want to preselect: "))
   except ValueError:
     print ("You must type an integer, please try again.")
 
@@ -31,19 +30,19 @@ while enddate is None:
     raise ValueError('Start date must be less than end date')
 
 # Ask the user to input the tickers
-tick = []
+tickers = []
 i = 1
-while i <= a: 
+while i <= number: 
   try: 
-    x = str(input(f'Enter a {i}th Ticker: ')) 
-    x = x.upper()
-    tick.append(x)
+    tick = str(input(f'Enter a {i}th Ticker: ')) 
+    tick = tick.upper()
+    tickers.append(tick)
     i += 1 
   except ValueError:
     print("Error - you have to enter a string. Try again.") 
 
 # Print the ticker list
-print("the ticker list is:", tick )
+print("the ticker list is:", tickers )
 
 # Ask the user to input the risk free rate
 riskfree = None
@@ -55,35 +54,32 @@ while riskfree is None:
 
 
 # Getting historical stock prices from Yahoo Finance
-price_data = web.get_data_yahoo(tick,
+price_historical = web.get_data_yahoo(tickers,
                            start = startdate,
                            end = enddate)['Adj Close']
 
 # Remove stocks that were not available during this time period and remove the tickers that do not exist
-price_data = price_data.dropna(axis=1, how='all')
+price_historical = price_historical.dropna(axis=1, how='all')
 
 # Computing the log returns
-log_ret = np.log(price_data/price_data.shift(1))
+log_ret = np.log(price_historical/price_historical.shift(1))
 
 ###################################################################################
 
-# We should add here a part where we get additional info from yahoo finance for each 
-# preselected stock and we compute for each stock some performance and risk metrics. 
-# Based on this additional information, the user then selects the final sample of stocks 
-# he wants to put in his portfolio and the rest of the code does the 3 types of portfolio optimization.
+# We should add here a part where we get additional info from yahoo finance for each preselected stock and we compute for each stock some performance and risk metrics. Based on this additional information, the user then selects the final sample of stocks he wants to put in his portfolio and the rest of the code does the 3 types of portfolio optimization.
 
 ##################################################################################
 
 
 # Computing the variance-covariance matrix
-cov_mat = log_ret.cov() * 252
+cov_mat = log_ret.cov() * 252 #252 trading days in a year
 print(cov_mat)
 
-# Simulating 7500 portfolios
+# number of portfolio to simulate
 n_portfolio = 7500
 
 # Creating empty arrays to store portfolio weights, return, risk, and sharpe ratio 
-all_wts = np.zeros((n_portfolio, len(price_data.columns)))
+all_weights = np.zeros((n_portfolio, len(price_historical.columns)))
 port_returns = np.zeros((n_portfolio))
 port_risk = np.zeros((n_portfolio))
 sharpe_ratio = np.zeros((n_portfolio))
@@ -91,45 +87,48 @@ sharpe_ratio = np.zeros((n_portfolio))
 # Simulating the 7500 portfolios and storing their weights, returns, volatility, sharpe ratio
 for i in range(n_portfolio):
   # Generating randon weigths using a uniform distribution
-  wts = np.random.uniform(size = len(price_data.columns))
-  wts = wts/np.sum(wts)
+  weights = np.random.uniform(size = len(price_historical.columns))
+  weights = weights/np.sum(weights)
   
   # Storing weights 
-  all_wts[i,:] = wts
+  all_weights[i,:] = weights
   
   # Storing return
-  port_ret = np.sum(log_ret.mean() * wts)
+  port_ret = np.sum(log_ret.mean() * weights)
   port_ret = (port_ret + 1) ** 252 - 1
   port_returns[i] = port_ret
   
   # Storing risk
-  port_sd = np.sqrt(np.dot(wts.T, np.dot(cov_mat, wts)))
+  port_sd = np.sqrt(np.dot(weights.T, np.dot(cov_mat, weights)))
   port_risk[i] = port_sd
   
   # Storing Sharpe Ratio  
   sr = (port_ret - riskfree) / port_sd
   sharpe_ratio[i] = sr
 
-names = price_data.columns
+names = price_historical.columns
 
 # Finding the minimum variance portfolio
-min_var = all_wts[port_risk.argmin()]
+min_var = all_weights[port_risk.argmin()]
 print(min_var)
 
 # Finding the tangency portfolio
-max_sr = all_wts[sharpe_ratio.argmax()]
+max_sr = all_weights[sharpe_ratio.argmax()]
 print(max_sr)
 
 # Finding the equally weighted portfolio
-eq_wts = []
-for i in range(len(wts)):
- eq_wts.append(1/len(wts))
-print(eq_wts)
+eq_weights = []
+for i in range(len(weights)):
+ eq_weights.append(1/len(weights))
+print(eq_weights)
+
+# Check if portfolio weights sum to 1
+print(sum(min_var), sum(max_sr), sum(eq_weights))
+
 
 
 ################################################################################
 
-# Here we can probably add some graphs and performance and risk metrics for each 
-#optimization so that the user can select the optimization he prefers
+# Here we can probably add some graphs and performance and risk metrics for each optimization so that the user can select the optimization he prefers
 
 ################################################################################
