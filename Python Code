@@ -53,10 +53,15 @@ while riskfree is None:
     print ("You must type a float")
 
 
-# Getting historical stock prices from Yahoo Finance
+# Getting historical stock prices and volume from Yahoo Finance
 price_historical = web.get_data_yahoo(tickers,
                            start = startdate,
                            end = enddate)['Adj Close']
+                           
+volume_data = web.get_data_yahoo(tick,
+                           start = startdate,
+                           end = enddate)['Volume']
+
 
 # Remove stocks that were not available during this time period and remove the tickers that do not exist
 price_historical = price_historical.dropna(axis=1, how='all')
@@ -67,6 +72,18 @@ log_ret = np.log(price_historical/price_historical.shift(1))
 ###################################################################################
 
 # We should add here a part where we get additional info from yahoo finance for each preselected stock and we compute for each stock some performance and risk metrics. Based on this additional information, the user then selects the final sample of stocks he wants to put in his portfolio and the rest of the code does the 3 types of portfolio optimization.
+
+# Plotting the historical stock prices and volumes
+price_data.plot(figsize=(20,10))
+plt.xlabel('Date')
+plt.ylabel('Closing Price')
+plt.title('Adjusted Closing Price')
+
+volume_data.plot(figsize=(20,10))
+plt.xlabel('Date')
+plt.ylabel('Volume')
+plt.title('Volume Traded')
+
 
 ##################################################################################
 
