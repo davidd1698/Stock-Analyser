@@ -13,23 +13,113 @@ while number is None:
   except ValueError:
     print ("You must type an integer, please try again.")
 
-# Ask for start date
-startdate = None
-while startdate is None:
-  try:
-    startdate = str(input("Enter start date in YYYY-MM-DD format: "))
-  except ValueError:
-    print ("You must type a date format, please try again.")
+############### date checking functions
 
-# Ask for end date
+def month_check(month):
+    if month > 0 and month <= 12: ## If month is between 1 and 12, return True.
+        return True
+    else:
+        return False
+
+def day_check(month, day):
+    days_in_month = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+    if 0 < day <= days_in_month[month]:
+        return True
+    else:
+        return False
+
+def year_check(year):
+    if len(year) >= 1 and len(year) <= 4: ## Check if year has between 1 to 4 numbers and return True.
+        return True
+    else:
+        return False
+
+earliest = str("1990-01-01")
+
+def start_date_check(start_date):
+  if startdate > earliest:
+    return True
+  else: 
+    return False
+
+today = str("2021-04-30")
+
+def end_date_check(start_date):
+  if enddate < today:
+    return True
+  else: 
+    return False
+
+def start_before_end(startdate, enddate):
+  if startdate < enddate:
+    return True
+  else: 
+    return False
+
+########## ask start date and check if correct (still problems with the loop
+
+while True:
+  startdate = None
+  while startdate is None:
+    try: 
+      startdate = str(input("Enter the start date in YYYY-MM-DD format: ")) ## Input date in the given format.
+      try:
+        year,month,day = startdate.split("-") ## split the date into 3 separate variables.
+
+        month_validity = month_check(int(month)) 
+
+        day_validity = day_check(int(month),int(day)) 
+
+        year_validity = year_check(year)
+
+        start_validity = start_date_check(startdate)
+
+        if month_validity and day_validity and year_validity and start_validity: ## check if all 4 variables are valid or True
+          print("The date {0} is valid.".format(startdate))
+
+        else:
+          print("The date {0} is invalid.".format(startdate))
+      except ValueError:
+        print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')
+    except ValueError:
+      print ("You must type a date format, please try again.")
+
+      if ValueError:
+        time.sleep(1)
+        continue
+
+
+
+#Ask for end date
 enddate = None
 while enddate is None:
-  try:
-    enddate = str(input("Enter end date in YYYY-MM-DD format: "))
+  try: 
+    enddate = str(input("Enter the end date in YYYY-MM-DD format: ")) ## Input date in the given format.
+    try:
+      year,month,day = enddate.split("-") ## split the date into 3 separate variables.
+
+      month_validity = month_check(int(month)) 
+
+      day_validity = day_check(int(month),int(day)) 
+
+      year_validity = year_check(year)
+
+      end_validity = end_date_check(enddate)
+
+      start_end_validity = start_before_end(startdate, enddate)
+
+      if month_validity and day_validity and year_validity and end_validity and start_end_validity : 
+        print("The date {0} is valid.".format(enddate))
+
+      else:
+        print("The date {0} is invalid.".format(enddate))
+    except ValueError:
+      print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')
   except ValueError:
     print ("You must type a date format, please try again.")
-  if startdate > enddate:
-    raise ValueError('Start date must be less than end date')
+    
+### end date part
+##############################################
 
 # Ask the user to input the tickers
 tickers = []
@@ -129,20 +219,25 @@ names = price_historical.columns
 
 # Finding the minimum variance portfolio
 min_var = all_weights[port_risk.argmin()]
-print(min_var)
+print("The weights of the minimum variance portfolio are:", min_var)
 
 # Finding the tangency portfolio
 max_sr = all_weights[sharpe_ratio.argmax()]
-print(max_sr)
+print("The weights of the maximum sharpe ratio portfolio are:", max_sr)
 
 # Finding the equally weighted portfolio
 eq_weights = []
 for i in range(len(weights)):
  eq_weights.append(1/len(weights))
-print(eq_weights)
+print("The weights of the equally weigthed portfolio are:", eq_weights)
+
+# Finding the maximum return portfolio
+max_ret = all_weights[port_ret.argmax()]
+print("The weights of the maximum return portfolio are:", max_ret)
+
 
 # Check if portfolio weights sum to 1
-print(sum(min_var), sum(max_sr), sum(eq_weights))
+print(sum(min_var), sum(max_sr), sum(eq_weights), sum(max_ret))
 
 
 
