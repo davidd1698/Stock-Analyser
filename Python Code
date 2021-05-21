@@ -13,8 +13,7 @@ while number is None:
   except ValueError:
     print ("You must type an integer, please try again.")
 
-############### date checking functions
-
+# date checking functions
 def month_check(month):
     if month > 0 and month <= 12: ## If month is between 1 and 12, return True.
         return True
@@ -56,67 +55,52 @@ def start_before_end(startdate, enddate):
   else: 
     return False
 
-########## ask start date and check if correct (still problems with the loop
+# ask start date and check if correct
+startdate = None
+while startdate is None:
+  try: 
+    startdate = str(input("Enter the start date in YYYY-MM-DD format: ")) 
+    year,month,day = startdate.split("-") 
+    month_validity = month_check(int(month)) 
+    day_validity = day_check(int(month),int(day)) 
+    year_validity = year_check(year)
+    start_validity = start_date_check(startdate)
 
-while True:
-  startdate = None
-  while startdate is None:
-    try: 
-      startdate = str(input("Enter the start date in YYYY-MM-DD format: ")) ## Input date in the given format.
-      try:
-        year,month,day = startdate.split("-") ## split the date into 3 separate variables.
+    if month_validity and day_validity and year_validity and start_validity:
+      print("The date {0} is valid.".format(startdate))
 
-        month_validity = month_check(int(month)) 
-
-        day_validity = day_check(int(month),int(day)) 
-
-        year_validity = year_check(year)
-
-        start_validity = start_date_check(startdate)
-
-        if month_validity and day_validity and year_validity and start_validity: ## check if all 4 variables are valid or True
-          print("The date {0} is valid.".format(startdate))
-
-        else:
-          print("The date {0} is invalid.".format(startdate))
-      except ValueError:
-        print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')
-    except ValueError:
-      print ("You must type a date format, please try again.")
-
-      if ValueError:
-        time.sleep(1)
-        continue
-
-
+    else:
+      print("The date {0} is invalid.".format(startdate))
+      startdate = None
+      
+  except ValueError:
+    print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')  
+    startdate = None
+     
 
 #Ask for end date
 enddate = None
 while enddate is None:
   try: 
-    enddate = str(input("Enter the end date in YYYY-MM-DD format: ")) ## Input date in the given format.
-    try:
-      year,month,day = enddate.split("-") ## split the date into 3 separate variables.
+    enddate = str(input("Enter the end date in YYYY-MM-DD format: ")) 
+    year,month,day = enddate.split("-") 
+    month_validity = month_check(int(month)) 
+    day_validity = day_check(int(month),int(day)) 
+    year_validity = year_check(year)
+    end_validity = end_date_check(enddate)
+    start_end_validity = start_before_end(startdate, enddate)
 
-      month_validity = month_check(int(month)) 
+    if month_validity and day_validity and year_validity and end_validity and start_end_validity : 
+      print("The date {0} is valid.".format(enddate))
 
-      day_validity = day_check(int(month),int(day)) 
+    else:
+      print("The date {0} is invalid.".format(enddate))
+      enddate = None
 
-      year_validity = year_check(year)
-
-      end_validity = end_date_check(enddate)
-
-      start_end_validity = start_before_end(startdate, enddate)
-
-      if month_validity and day_validity and year_validity and end_validity and start_end_validity : 
-        print("The date {0} is valid.".format(enddate))
-
-      else:
-        print("The date {0} is invalid.".format(enddate))
-    except ValueError:
-      print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')
   except ValueError:
-    print ("You must type a date format, please try again.")
+    print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')
+    enddate = None
+  
     
 ### end date part
 ##############################################
