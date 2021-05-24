@@ -324,7 +324,142 @@ print(sum(min_var), sum(max_sr), sum(eq_weights), sum(max_ret))
 
 
 ################################################################################
+#Here we will display some risk metrics for the minimum variance portfolio
+return_stocks_min_var = price_historical.pct_change()
 
-# Here we can probably add some graphs and performance and risk metrics for each optimization so that the user can select the optimization he prefers
+daily_returns_portfolio_mean = return_stocks_min_var.mean()
+print(daily_returns_portfolio_mean)
+
+allocated_daily_returns_min_var = (min_var * daily_returns_portfolio_mean)
+
+portfolio_return_min_var = np.sum(allocated_daily_returns_min_var)
+print('The return of the Minimum variance portfolio is ', portfolio_return)
+
+return_stocks_min_var['portfolio_daily_returns'] = return_stocks_min_var.dot(min_var)
+
+
+Cumulative_returns_daily_min_var = (1+return_stocks).cumprod()
+Cumulative_returns_daily_min_var.tail(5)
+
+Cumulative_returns_daily_min_var['portfolio_daily_returns'].plot(figsize=(15,5))
+plt.title('Minimum Variance Portfolio Daily Return')
+plt.gca().legend()
+
+
+matrix_covariance_portfolio = return_stocks_min_var.iloc[:,:-1]
+matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
+
+
+portfolio_variance_min_var = np.dot(min_var.T,np.dot(matrix_covariance_portfolio, min_var))
+
+#standard deviation (risk of portfolio)
+portfolio_standard_dev_min_var = np.sqrt(portfolio_variance)
+
+portfolio_vol_min_var = np.sqrt(np.dot(min_var.T,np.dot(matrix_covariance_portfolio.cov()*252,min_var)))
+
+print('The Variance of the Minimum Variance Portfolio is ', portfolio_variance_min_var)
+print('The Standard Deviation of the Minimum Variance Portfolio is ', portfolio_standard_dev_min_var)
+print('The Volatility of the Minimum Variance Portfolio is ', portfolio_vol_min_var)
+
+#Here we will display some risk metrics for the maximum Sharpe ratio portfolio
+return_stocks_max_sr = price_historical.pct_change()
+
+allocated_daily_returns_max_sr = (max_sr * daily_returns_portfolio_mean)
+
+portfolio_return_max_sr = np.sum(allocated_daily_returns_max_sr)
+print('The return of the Maximum Sharpe Ratio portfolio is ', portfolio_return)
+
+return_stocks_max_sr['portfolio_daily_returns'] = return_stocks_max_sr.dot(max_sr)
+
+
+Cumulative_returns_daily_max_sr = (1+return_stocks_max_sr).cumprod()
+Cumulative_returns_daily_max_sr.tail(5)
+
+Cumulative_returns_daily_max_sr['portfolio_daily_returns'].plot()
+plt.gca().legend()
+
+
+matrix_covariance_portfolio = return_stocks_max_sr.iloc[:,:-1]
+matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
+
+
+portfolio_variance_max_sr = np.dot(max_sr.T,np.dot(matrix_covariance_portfolio, max_sr))
+
+#standard deviation (risk of portfolio)
+portfolio_standard_dev_max_sr = np.sqrt(portfolio_variance)
+
+portfolio_vol_max_sr = np.sqrt(np.dot(max_sr.T,np.dot(matrix_covariance_portfolio.cov()*252,max_sr)))
+
+print('The Variance of the Maximum Sharpe Ratio Portfolio is ', portfolio_variance_max_sr)
+print('The Standard Deviation of the Maximum Sharpe Ratio Portfolio is ', portfolio_standard_dev_max_sr)
+print('The Volatility of the Maximum Sharpe Ratio Portfolio is ', portfolio_vol_max_sr)
+
+return_stocks_eq_weights = price_historical.pct_change()
+
+allocated_daily_returns_eq_weights = (eq_weights * daily_returns_portfolio_mean)
+
+portfolio_return_eq_weights = np.sum(allocated_daily_returns_eq_weights)
+print('The return of the Equal Weights portfolio is ', portfolio_return)
+
+return_stocks_eq_weights['portfolio_daily_returns'] = return_stocks_eq_weights.dot(eq_weights)
+
+
+Cumulative_returns_daily_eq_weights = (1+return_stocks_eq_weights).cumprod()
+Cumulative_returns_daily_eq_weights.tail(5)
+
+Cumulative_returns_daily_eq_weights['portfolio_daily_returns'].plot()
+plt.gca().legend()
+
+
+matrix_covariance_portfolio = return_stocks_eq_weights.iloc[:,:-1]
+matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
+
+
+portfolio_variance_eq_weights = np.dot(eq_weights,np.dot(matrix_covariance_portfolio, eq_weights))
+
+#standard deviation (risk of portfolio)
+portfolio_standard_dev_eq_weights = np.sqrt(portfolio_variance)
+
+portfolio_vol_eq_weights = np.sqrt(np.dot(eq_weights,np.dot(matrix_covariance_portfolio.cov()*252,eq_weights)))
+
+print('The Variance of the Equal Weights Portfolio is ', portfolio_variance_eq_weights)
+print('The Standard Deviation of the Equal Weights Portfolio is ', portfolio_standard_dev_eq_weights)
+print('The Volatility of the Equal Weights Portfolio is ', portfolio_vol_eq_weights)
+
+
+
+#Here we will display some risk metrics for the maximum return portfolio
+return_stocks_max_ret = price_historical.pct_change()
+
+allocated_daily_returns_max_ret = (max_ret * daily_returns_portfolio_mean)
+
+portfolio_return_max_ret = np.sum(allocated_daily_returns_max_ret)
+print('The return of the Maximum Return portfolio is ', portfolio_return)
+
+return_stocks_max_ret['portfolio_daily_returns'] = return_stocks_max_ret.dot(max_ret)
+
+
+Cumulative_returns_daily_max_ret = (1+return_stocks_max_ret).cumprod()
+Cumulative_returns_daily_max_ret.tail(5)
+
+Cumulative_returns_daily_max_ret['portfolio_daily_returns'].plot()
+plt.gca().legend()
+
+
+matrix_covariance_portfolio = return_stocks_max_ret.iloc[:,:-1]
+matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
+
+
+portfolio_variance_max_ret = np.dot(max_ret.T,np.dot(matrix_covariance_portfolio, max_ret))
+
+#standard deviation (risk of portfolio)
+portfolio_standard_dev_max_ret = np.sqrt(portfolio_variance)
+
+portfolio_vol_max_ret = np.sqrt(np.dot(max_ret.T,np.dot(matrix_covariance_portfolio.cov()*252,max_ret)))
+
+print('The Variance of the Maximum Return Portfolio is ', portfolio_variance_max_ret)
+print('The Standard Deviation of the Maximum Return Portfolio is ', portfolio_standard_dev_max_ret)
+print('The Volatility of the Maximum Return Portfolio is ', portfolio_vol_max_ret)
+
 
 ################################################################################
