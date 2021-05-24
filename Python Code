@@ -262,7 +262,7 @@ pd.set_option('display.max_rows', None)
 # We print the table using pandas to obtain a table layout
 df_combined_pandas = pd.DataFrame(df_combined)
 
-display(df_combined_panda)
+display(df_combined_pandas)
 
 
 # To allow for some comparison between the stocks, we normalize the adjusted closing prices and plot them 
