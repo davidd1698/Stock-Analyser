@@ -1,5 +1,7 @@
-Let's start with the project!
-
+from datetime import datetime
+import lxml
+from lxml import html
+import requests
 import pandas as pd
 import numpy as np
 import pandas_datareader as web
@@ -147,6 +149,120 @@ log_ret = np.log(price_historical/price_historical.shift(1))
 ###################################################################################
 
 # We should add here a part where we get additional info from yahoo finance for each preselected stock and we compute for each stock some performance and risk metrics. Based on this additional information, the user then selects the final sample of stocks he wants to put in his portfolio and the rest of the code does the 3 types of portfolio optimization.
+
+# Set up the request headers that we're going to use, to simulate a request by the Chrome browser.
+def get_page(url):  
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'max-age=0',
+        'Pragma': 'no-cache',
+        'Referrer': 'https://google.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36'
+    }
+
+    return requests.get(url, headers=headers)
+
+#Ensure that some table rows are found
+def parse_rows(table_rows):
+    parsed_rows = []
+
+    for table_row in table_rows:
+        parsed_row = []
+        el = table_row.xpath("./div")
+
+        none_count = 0
+
+        for rs in el:
+            try:
+                (text,) = rs.xpath('.//span/text()[1]')
+                parsed_row.append(text)
+            except ValueError:
+                parsed_row.append(np.NaN)
+                none_count += 1
+
+        if (none_count < 4):
+            parsed_rows.append(parsed_row)
+            
+    return pd.DataFrame(parsed_rows)
+
+# Set the index to the first column: 'Period Ending' and transpose the DataFrame, so that our header contains the account names
+def clean_data(df):
+    df = df.set_index(0) 
+    df = df.transpose() 
+    
+    # Rename the "Breakdown" column to "Date"
+    cols = list(df.columns)
+    cols[0] = 'Date'
+    df = df.set_axis(cols, axis='columns', inplace=False)
+    
+    # We convert all columns into float numbers (numeric), except the first column which is the date
+    numeric_columns = list(df.columns)[1::] 
+    for column_index in range(1, len(df.columns)): 
+        df.iloc[:,column_index] = df.iloc[:,column_index].str.replace(',', '') 
+        df.iloc[:,column_index] = df.iloc[:,column_index].astype(np.float64) 
+        
+    return df
+
+def scrape_table(url):
+    # Fetch the page that we're going to parse
+    page = get_page(url);
+
+    # Parse the page with LXML, so that we can start doing some XPATH queries to extract the data that we want
+    tree = html.fromstring(page.content)
+
+    # Fetch all div elements which have class 'D(tbr)'
+    table_rows = tree.xpath("//div[contains(@class, 'D(tbr)')]")
+    
+    # Ensure that some table rows are found
+    assert len(table_rows) > 0
+    
+    df = parse_rows(table_rows)
+    df = clean_data(df)
+        
+    return df
+
+# We scrape data for the balance sheet, the income statement and the cash flow statement 
+def scrape(symbol):
+    print('Attempting to scrape data for ' + symbol)
+
+    df_balance_sheet = scrape_table('https://finance.yahoo.com/quote/' + symbol + '/balance-sheet?p=' + symbol)
+    df_balance_sheet = df_balance_sheet.set_index('Date')
+
+    df_income_statement = scrape_table('https://finance.yahoo.com/quote/' + symbol + '/financials?p=' + symbol)
+    df_income_statement = df_income_statement.set_index('Date')
+    
+    df_cash_flow = scrape_table('https://finance.yahoo.com/quote/' + symbol + '/cash-flow?p=' + symbol)
+    df_cash_flow = df_cash_flow.set_index('Date')
+    
+    # We create a joint table that will gather data from the balance sheet, the income statement and the statement of cash flows for one ticker in the same table
+    df_joined = df_balance_sheet \
+        .join(df_income_statement, on='Date', how='outer', rsuffix=' - Income Statement') \
+        .join(df_cash_flow, on='Date', how='outer', rsuffix=' - Cash Flow') \
+        .dropna(axis=1, how='all') \
+        .reset_index()
+    
+    # We add a column that includes the name of the ticker to allow for a better understanding of the results
+    df_joined.insert(1, 'Symbol', symbol) 
+    
+    return df_joined
+
+# We create a new functions that will allow us to scrape data from the all the tickers list that the user inputed before, and run each of tehm through the scrape function we created before
+def scrape_multi(tickers):
+    return pd.concat([scrape(symbol) for symbol in tickers], sort=False)
+
+# This is the table that will include gather information from the balance sheet, the income statement and the statement of cash flows for all the stocks selected by the user
+df_combined = scrape_multi(tickers)
+
+# We ask the program to display all the columns avialable and not hide some of them
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+
+# We print the table
+df_combined
+
+
 
 # To allow for some comparison between the stocks, we normalize the adjusted closing prices and plot them 
 normalized_price_historical = price_historical.pct_change().dropna()
