@@ -262,7 +262,11 @@ pd.set_option('display.max_rows', None)
 # We print the table using pandas to obtain a table layout
 df_combined_pandas = pd.DataFrame(df_combined)
 
+# We rename the second column with the title "Date"
+df_combined_pandas.columns = df_combined.columns.str.replace('index', 'Date')
+
 display(df_combined_pandas)
+
 
 
 # To allow for some comparison between the stocks, we normalize the adjusted closing prices and plot them 
