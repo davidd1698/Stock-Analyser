@@ -15,93 +15,70 @@ while number is None:
   except ValueError:
     print ("You must type an integer, please try again.")
 
-# date checking functions
-def month_check(month):
-    if month > 0 and month <= 12: ## If month is between 1 and 12, return True.
-        return True
-    else:
-        return False
+import datetime
 
-def day_check(month, day):
-    days_in_month = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
-    if month > 0 and month <= 12 and 0 < day <= days_in_month[month]:
-        return True
-    else:
-        return False
+CurrentDate = datetime.date.today()             # dates after this date are in the future and therefore invalid
+foundedwallstr = datetime.date(1792, 5, 17)     # dates before this date will be invalid, because the wallstreet wasn't even invented before this date
 
-def year_check(year):
-    if len(year) >= 1 and len(year) <= 4: ## Check if year has between 1 to 4 numbers and return True.
-        return True
-    else:
-        return False
-
-earliest = str("1990-01-01")
-
-def start_date_check(start_date):
-  if startdate > earliest:
-    return True
-  else: 
-    return False
-
-today = str("2021-04-30")
-
-def end_date_check(start_date):
-  if enddate < today:
-    return True
-  else: 
-    return False
-
-def start_before_end(startdate, enddate):
-  if startdate < enddate:
-    return True
-  else: 
-    return False
-
-# ask start date and check if correct
 startdate = None
 while startdate is None:
-  try: 
-    startdate = str(input("Enter the start date in YYYY-MM-DD format: ")) 
-    year,month,day = startdate.split("-") 
-    month_validity = month_check(int(month)) 
-    day_validity = day_check(int(month),int(day)) 
-    year_validity = year_check(year)
-    start_validity = start_date_check(startdate)
+    try:
+        startdate = str(input("Enter the start date in YYYY-MM-DD format: "))
+        year, month, day = map(int, startdate.split('-'))
+        startdate = datetime.date(year, month, day)
+        # if the user inputs a higher date than the current
+        if startdate > CurrentDate:
+            print("Your date can't be in the future, please try again.")
+            startdate = None
 
-    if month_validity and day_validity and year_validity and start_validity:
-      print("The date {0} is valid.".format(startdate))
+        # if the user inputs a valid date it's between the current date and the date the wallstreet was founded
+        elif foundedwallstr < startdate < CurrentDate:
+            print("This date is valid!")
+            break
 
-    else:
-      print("The date {0} is invalid.".format(startdate))
-      startdate = None
-      
-  except ValueError:
-    print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')  
+        # if the user inputs a date before there is data
+        elif startdate < foundedwallstr:
+            print("The stock exchange was in" , startdate, "not even invented, please try again!")
+        startdate = None
+
+            # if the user inputs for example letters
+    except ValueError:\
+        print("You must type a date format, please try again!")
     startdate = None
-     
 
-#Ask for end date
+
+# Ask for end date
 enddate = None
 while enddate is None:
-  try: 
-    enddate = str(input("Enter the end date in YYYY-MM-DD format: ")) 
-    year,month,day = enddate.split("-") 
-    month_validity = month_check(int(month)) 
-    day_validity = day_check(int(month),int(day)) 
-    year_validity = year_check(year)
-    end_validity = end_date_check(enddate)
-    start_end_validity = start_before_end(startdate, enddate)
+  try:
+    enddate = str(input("Enter the end date in YYYY-MM-DD format: "))
+    year, month, day = map(int, enddate.split('-'))
+    enddate = datetime.date(year, month, day)
 
-    if month_validity and day_validity and year_validity and end_validity and start_end_validity : 
-      print("The date {0} is valid.".format(enddate))
+    # if the user inputs a higher date than the current
+    if enddate > CurrentDate:
+        print("Your date can't be in the future, please try again.")
+        enddate = None
 
-    else:
-      print("The date {0} is invalid.".format(enddate))
-      enddate = None
+    # if the user inputs a valid date between the start date and the current date
+    elif CurrentDate > enddate > startdate:
+        print("This date is valid too!")
+        break
 
-  except ValueError:
-    print('Your input was not valid. Please enter the date in YYYY-MM-DD format.')
-    enddate = None
+    # if the user inputs a date before there is data
+    elif enddate < foundedwallstr:
+        print("The stock exchange was in", startdate, "not even invented, please try again!")
+        enddate = None
+
+    # if the user inputs a lower enddate than the startdate
+    elif enddate < startdate:
+        print("The end date can't be before the start date.")
+        enddate = None
+
+    # if the user inputs for example letters
+  except ValueError:\
+          print("You must type a date format, please try again!")
+  enddate = None
   
     
 ### end date part
