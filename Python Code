@@ -259,9 +259,10 @@ df_combined = scrape_multi(tickers)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-# We print the table
-df_combined
+# We print the table using pandas to obtain a table layout
+df_combined_pandas = pd.DataFrame(df_combined)
 
+display(df_combined_panda)
 
 
 # To allow for some comparison between the stocks, we normalize the adjusted closing prices and plot them 
