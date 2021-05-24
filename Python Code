@@ -261,10 +261,7 @@ pd.set_option('display.max_rows', None)
 
 # We print the table using pandas to obtain a table layout
 df_combined_pandas = pd.DataFrame(df_combined)
-
-# We rename the second column with the title "Date"
-df_combined_pandas.columns = df_combined.columns.str.replace('index', 'Date')
-
+del df_combined_pandas['index']
 display(df_combined_pandas)
 
 
