@@ -134,10 +134,9 @@ price_historical = web.get_data_yahoo(tickers,
                            start = startdate,
                            end = enddate)['Adj Close']
                            
-volume_data = web.get_data_yahoo(tick,
+volume_historical = web.get_data_yahoo(tickers,
                            start = startdate,
                            end = enddate)['Volume']
-
 
 # Remove stocks that were not available during this time period and remove the tickers that do not exist
 price_historical = price_historical.dropna(axis=1, how='all')
@@ -149,16 +148,25 @@ log_ret = np.log(price_historical/price_historical.shift(1))
 
 # We should add here a part where we get additional info from yahoo finance for each preselected stock and we compute for each stock some performance and risk metrics. Based on this additional information, the user then selects the final sample of stocks he wants to put in his portfolio and the rest of the code does the 3 types of portfolio optimization.
 
-# Plotting the historical stock prices and volumes
-price_data.plot(figsize=(20,10))
+# To allow for some comparison between the stocks, we normalize the adjusted closing prices and plot them 
+normalized_price_historical = price_historical.pct_change().dropna()
+(normalized_price_historical+1).cumprod().plot(figsize=(15,5))
 plt.xlabel('Date')
-plt.ylabel('Closing Price')
-plt.title('Adjusted Closing Price')
+plt.ylabel('Adjusted Closing Price')
+plt.title('Evolution of the Adjusted Closing Price')
 
-volume_data.plot(figsize=(20,10))
+#Here we display some additional information about the stock historical closing prices
+perc =[.20, .40, .60, .80]
+print(price_historical.describe(percentiles = perc))
+
+
+
+# To allow for some comparison between the stocks, we normalize the volumes traded and plot them 
+normalized_volume_historical = volume_historical.pct_change().dropna()
+(normalized_volume_historical+1).cumprod().plot(figsize=(15,5))
 plt.xlabel('Date')
-plt.ylabel('Volume')
-plt.title('Volume Traded')
+plt.ylabel('Adjusted Volume Traded')
+plt.title('Evolution of the Adjusted Volume Traded')
 
 
 ##################################################################################
