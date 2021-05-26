@@ -1,5 +1,5 @@
-import datetime
 from datetime import datetime
+import datetime
 import lxml
 from lxml import html
 import requests
