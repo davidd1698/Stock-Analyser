@@ -1,3 +1,4 @@
+import datetime
 from datetime import datetime
 import lxml
 from lxml import html
@@ -336,13 +337,13 @@ allocated_daily_returns_min_var = (min_var * daily_returns_portfolio_mean)
 
 # Calculate the total return of the minimum variance portfolio and print it
 portfolio_return_min_var = np.sum(allocated_daily_returns_min_var)
-print('The return of the Minimum variance portfolio is ', portfolio_return)
+print('The return of the Minimum variance portfolio is ', portfolio_return_min_var)
 
 # Compute the matrix multiplication between the returns of each stock and the weights
 return_stocks_min_var['portfolio_daily_returns'] = return_stocks_min_var.dot(min_var)
 
 # Calculate the cumulative returns of the portfolio 
-Cumulative_returns_daily_min_var = (1+return_stocks).cumprod()
+Cumulative_returns_daily_min_var = (1+return_stocks_min_var).cumprod()
 Cumulative_returns_daily_min_var.tail(5)
 
 # Plot the cumulative return of the portfolio
@@ -360,7 +361,7 @@ matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
 portfolio_variance_min_var = np.dot(min_var.T,np.dot(matrix_covariance_portfolio, min_var))
 
 # Calculate the Standard deviation of the minimum variance portfolio
-portfolio_standard_dev_min_var = np.sqrt(portfolio_variance)
+portfolio_standard_dev_min_var = np.sqrt(portfolio_variance_min_var)
 
 # Calculate the volatility of the minimum variance portfolio
 portfolio_vol_min_var = np.sqrt(np.dot(min_var.T,np.dot(matrix_covariance_portfolio.cov()*252,min_var)))
@@ -381,7 +382,7 @@ allocated_daily_returns_max_sr = (max_sr * daily_returns_portfolio_mean)
 
 # Calculate the total return of the maximum sharpe ratio portfolio and print it
 portfolio_return_max_sr = np.sum(allocated_daily_returns_max_sr)
-print('The return of the Maximum Sharpe Ratio portfolio is ', portfolio_return)
+print('The return of the Maximum Sharpe Ratio portfolio is ', portfolio_return_max_sr)
 
 # Compute the matrix multiplication between the returns of each stock and the weights
 return_stocks_max_sr['portfolio_daily_returns'] = return_stocks_max_sr.dot(max_sr)
@@ -404,7 +405,7 @@ matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
 portfolio_variance_max_sr = np.dot(max_sr.T,np.dot(matrix_covariance_portfolio, max_sr))
 
 # Calculate the Standard deviation of the maximum Sharpe ratio portfolio
-portfolio_standard_dev_max_sr = np.sqrt(portfolio_variance)
+portfolio_standard_dev_max_sr = np.sqrt(portfolio_variance_max_sr)
 
 # Calculate the volatility of the maximum Sharpe ratio portfolio
 portfolio_vol_max_sr = np.sqrt(np.dot(max_sr.T,np.dot(matrix_covariance_portfolio.cov()*252,max_sr)))
@@ -425,7 +426,7 @@ allocated_daily_returns_eq_weights = (eq_weights * daily_returns_portfolio_mean)
 
 # Calculate the total return of the equal weights portfolio and print it
 portfolio_return_eq_weights = np.sum(allocated_daily_returns_eq_weights)
-print('The return of the Equal Weights portfolio is ', portfolio_return)
+print('The return of the Equal Weights portfolio is ', portfolio_return_eq_weights)
 
 # Compute the matrix multiplication between the returns of each stock and the weights
 return_stocks_eq_weights['portfolio_daily_returns'] = return_stocks_eq_weights.dot(eq_weights)
@@ -448,7 +449,7 @@ matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
 portfolio_variance_eq_weights = np.dot(eq_weights,np.dot(matrix_covariance_portfolio, eq_weights))
 
 # Calculate the Standard deviation of the equal weights portfolio
-portfolio_standard_dev_eq_weights = np.sqrt(portfolio_variance)
+portfolio_standard_dev_eq_weights = np.sqrt(portfolio_variance_eq_weights)
 
 # Calculate the volatility of the equal weights portfolio
 portfolio_vol_eq_weights = np.sqrt(np.dot(eq_weights,np.dot(matrix_covariance_portfolio.cov()*252,eq_weights)))
@@ -469,7 +470,7 @@ allocated_daily_returns_max_ret = (max_ret * daily_returns_portfolio_mean)
 
 # Calculate the total return of the max return portfolio and print it
 portfolio_return_max_ret = np.sum(allocated_daily_returns_max_ret)
-print('The return of the Maximum Return portfolio is ', portfolio_return)
+print('The return of the Maximum Return portfolio is ', portfolio_return_max_ret)
 
 # Compute the matrix multiplication between the returns of each stock and the weights
 return_stocks_max_ret['portfolio_daily_returns'] = return_stocks_max_ret.dot(max_ret)
@@ -492,7 +493,7 @@ matrix_covariance_portfolio = (matrix_covariance_portfolio.cov())*252
 portfolio_variance_max_ret = np.dot(max_ret.T,np.dot(matrix_covariance_portfolio, max_ret))
 
 # Calculate the Standard deviation of the maximum return portfolio
-portfolio_standard_dev_max_ret = np.sqrt(portfolio_variance)
+portfolio_standard_dev_max_ret = np.sqrt(portfolio_variance_max_ret)
 
 # Calculate the volatility of the maximum return ratio portfolio
 portfolio_vol_max_ret = np.sqrt(np.dot(max_ret.T,np.dot(matrix_covariance_portfolio.cov()*252,max_ret)))
