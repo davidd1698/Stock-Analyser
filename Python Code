@@ -53,12 +53,18 @@ while enddate is None:
     enddate = str(input("Enter the end date in YYYY-MM-DD format: "))
     year, month, day = map(int, enddate.split('-'))
     enddate = datetime.date(year, month, day)
+    delta = enddate - startdate
 
     # if the user inputs a higher date than the current
     if enddate > CurrentDate:
         print("Your date can't be in the future, please try again.")
         enddate = None
 
+    # if the user inputs two dates which are too close between each other, approx. 179 days
+    elif 0 < delta.days < 179:
+        print("The delta between start- and end date has to be at least 180 days. Your delta is only", delta.days,"days.")
+        enddate = None
+        
     # if the user inputs a valid date between the start date and the current date
     elif CurrentDate > enddate > startdate:
         print("This date is valid too!")
