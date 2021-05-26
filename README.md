@@ -1,4 +1,4 @@
-# Stock-Analyser
+Here is the description of what our stock analysing program does:
 
 
 The program will ask the user to input the number of stocks he wants to select, the ticker of each stock, the start and end dates and the risk free rate and checking that those inputs are usable by the program, the program will do several things: 
