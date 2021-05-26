@@ -346,10 +346,6 @@ return_stocks_min_var['portfolio_daily_returns'] = return_stocks_min_var.dot(min
 Cumulative_returns_daily_min_var = (1+return_stocks_min_var).cumprod()
 Cumulative_returns_daily_min_var.tail(5)
 
-# Plot the cumulative return of the portfolio
-Cumulative_returns_daily_min_var['portfolio_daily_returns'].plot(figsize=(15,5))
-plt.title('Minimum Variance Portfolio Daily Return')
-plt.gca().legend()
 
 # Compute the covariance matrix of the portfolio. We use iloc in order to remove the last column from the matrix.
 matrix_covariance_portfolio = return_stocks_min_var.iloc[:,:-1]
@@ -391,9 +387,6 @@ return_stocks_max_sr['portfolio_daily_returns'] = return_stocks_max_sr.dot(max_s
 Cumulative_returns_daily_max_sr = (1+return_stocks_max_sr).cumprod()
 Cumulative_returns_daily_max_sr.tail(5)
 
-# Plot the cumulative return of the portfolio
-Cumulative_returns_daily_max_sr['portfolio_daily_returns'].plot()
-plt.gca().legend()
 
 # Compute the covariance matrix of the portfolio. We use iloc in order to remove the last column from the matrix.
 matrix_covariance_portfolio = return_stocks_max_sr.iloc[:,:-1]
@@ -435,10 +428,6 @@ return_stocks_eq_weights['portfolio_daily_returns'] = return_stocks_eq_weights.d
 Cumulative_returns_daily_eq_weights = (1+return_stocks_eq_weights).cumprod()
 Cumulative_returns_daily_eq_weights.tail(5)
 
-# Plot the cumulative return of the portfolio
-Cumulative_returns_daily_eq_weights['portfolio_daily_returns'].plot()
-plt.gca().legend()
-
 # Compute the covariance matrix of the portfolio. We use iloc in order to remove the last column from the matrix.
 matrix_covariance_portfolio = return_stocks_eq_weights.iloc[:,:-1]
 
@@ -479,9 +468,6 @@ return_stocks_max_ret['portfolio_daily_returns'] = return_stocks_max_ret.dot(max
 Cumulative_returns_daily_max_ret = (1+return_stocks_max_ret).cumprod()
 Cumulative_returns_daily_max_ret.tail(5)
 
-# Plot the cumulative return of the portfolio
-Cumulative_returns_daily_max_ret['portfolio_daily_returns'].plot()
-plt.gca().legend()
 
 # Compute the covariance matrix of the portfolio. We use iloc in order to remove the last column from the matrix.
 matrix_covariance_portfolio = return_stocks_max_ret.iloc[:,:-1]
