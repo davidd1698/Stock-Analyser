@@ -313,15 +313,57 @@ for i in range(len(weights)):
  eq_weights.append(1/len(weights))
 print("The weights of the equally weigthed portfolio are:", eq_weights)
 
-# Finding the maximum return portfolio
-max_ret = all_weights[port_ret.argmax()]
-print("The weights of the maximum return portfolio are:", max_ret)
-
-
 # Check if portfolio weights sum to 1
-print(sum(min_var), sum(max_sr), sum(eq_weights), sum(max_ret))
+print(sum(min_var), sum(max_sr), sum(eq_weights))
 
 
+################################################################################
+# Here we will display some risk metrics for the minimum variance portfolio
+
+returns_mvp = np.matmul(log_ret, np.transpose(min_var)) #compute the daily returns of the portfolio
+mean_annual_ret_mvp = np.mean(returns_mvp)*252 #compute the mean annual return of the portfolio
+var_mvp = np.var(returns_mvp)*252 #compute the annual variance of the portfolio
+volatility_mvp = np.sqrt(var_mvp) #compute the annual volatility of the portfolio
+value_at_risk_mvp = mean_annual_ret_mvp - 1.96*volatility_mvp #compute the annual 95% VaR
+
+print("the mean annual return of the MVP is:", round(mean_annual_ret_mvp, 4))
+print("the annual volatility of the MVP is:", round(volatility_mvp, 4))
+print("the 95% annual value at risk of the MVP is:", round(value_at_risk_mvp, 4))
+
+
+# Here we will display some risk metrics for the maximum return portfolio
+
+returns_sr = np.matmul(log_ret, np.transpose(max_sr))
+mean_annual_ret_sr = np.mean(returns_sr)*252
+var_sr = np.var(returns_sr)*252
+volatility_sr = np.sqrt(var_sr)
+value_at_risk_sr = mean_annual_ret_sr - 1.96*volatility_sr
+
+print("the mean annual return of the MSRP is:", round(mean_annual_ret_sr, 4))
+print("the annual volatility of the MSRP is:", round(volatility_sr, 4))
+print("the 95% annual value at risk of the MSRP is:", round(value_at_risk_sr, 4))
+
+
+# Here we will display some risk metrics for the maximum return portfolio
+
+returns_eq = np.matmul(log_ret, np.transpose(eq_weights))
+mean_annual_ret_eq = np.mean(returns_eq)*252 
+var_eq = np.var(returns_eq)*252
+volatility_eq = np.sqrt(var_eq)
+value_at_risk_eq = mean_annual_ret_eq - 1.96*volatility_eq
+
+print("the mean annual return of the EWP is:", round(mean_annual_ret_eq, 4))
+print("the annual volatility of the EWP is:", round(volatility_eq, 4))
+print("the 95% annual value at risk of the EWP is:", round(value_at_risk_eq, 4))
+
+
+################## END OF CODE ###########################
+
+
+
+
+
+# now we can remove what's below
 
 ################################################################################
 # Here we will display some risk metrics for the minimum variance portfolio
