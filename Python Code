@@ -337,7 +337,7 @@ print("the annual volatility of the MVP is:", round(volatility_mvp, 4))
 print("the 95% annual value at risk of the MVP is:", round(value_at_risk_mvp, 4))
 
 
-# Here we will display some risk metrics for the maximum return portfolio
+# Here we will display some risk metrics for the maximum sharpe ratio portfolio
 
 returns_sr = np.matmul(log_ret, np.transpose(max_sr))
 mean_annual_ret_sr = np.mean(returns_sr)*252
@@ -350,7 +350,7 @@ print("the annual volatility of the MSRP is:", round(volatility_sr, 4))
 print("the 95% annual value at risk of the MSRP is:", round(value_at_risk_sr, 4))
 
 
-# Here we will display some risk metrics for the maximum return portfolio
+# Here we will display some risk metrics for the equally weighted portfolio
 
 returns_eq = np.matmul(log_ret, np.transpose(eq_weights))
 mean_annual_ret_eq = np.mean(returns_eq)*252 
