@@ -72,7 +72,7 @@ while enddate is None:
 
     # if the user inputs a date before there is data
     elif enddate < foundedwallstr:
-        print("The stock exchange was in", startdate, "not even invented, please try again!")
+        print("The stock exchange was in", enddate, "not even invented, please try again!")
         enddate = None
 
     # if the user inputs a lower enddate than the startdate
